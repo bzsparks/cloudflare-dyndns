@@ -23,7 +23,7 @@ def GetCurrentIP():
     # Use opendns "myip" function to query current IP.
     resolver = dns.resolver.Resolver()
     resolver.nameservers=[socket.gethostbyname('resolver1.opendns.com')]
-    return resolver.query('myip.opendns.com')[0]
+    return resolver.query('myip.opendns.com')[0].address
 
 def GetRecordIDs(cf, zone_id):
     try:
@@ -88,7 +88,7 @@ def UpdateRecord(cf, ids, currentIP):
             log("IP, {0}, has not changed for {1}.".format(knownIP, dns_name))
             exit
         else:
-            dns_record[0]['content'] = currentIP.address
+            dns_record[0]['content'] = currentIP
             try:
                 #dns_record = cf.zones.dns_records.put(zone_id, dns_record_id, data=dns_record[0])
                 msg = "UPDATED: {0} {1} -> {2}".format(dns_name, knownIP, currentIP)
