@@ -86,7 +86,7 @@ def UpdateRecord(cf, ids, currentIP):
         #print("{0} {1} {2} {3}".format(dns_name, dns_record_id, ip_address, ip_address_type))
         if currentIP == knownIP:
             log("IP, {0}, has not changed for {1}.".format(knownIP, dns_name))
-            exit
+            continue
         else:
             dns_record[0]['content'] = currentIP
             try:
