@@ -64,7 +64,5 @@ target/
 #pii ignore
 required.json
 
+#log file
 cloudflare.log
-
-#sqlite db
-#apcupsd.sqlite

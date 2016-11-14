@@ -1,0 +1,17 @@
+{
+    "auth_email": "yourCFaccount@yourmail.com",
+    "auth_key": "CF_authkey",
+    "zone_name": "dns_zone",
+    "record_names": [
+        "dns_record_1",
+        "dns_record_2"
+    ],
+    "sender": "senderaddress@senderdomain.com",
+    "recipients": [
+        "recipient1@recipientdomain.com",
+        "recipient2@recipientdomain.com",
+        "recipient3@recipientdomain.com",
+        "recipient4@recipientdomain.com"
+    ],
+    "password": "supersecretpassword"
+}
