@@ -49,8 +49,9 @@ def GetRecordIDs(cf, zone_id):
             params = {'name':record, 'match':'all', 'type':'A'}
             dns_records.append(cf.zones.dns_records.get(zone_id, params=params))
     except CloudFlare.exceptions.CloudFlareAPIError as e:
-        exit('/zones/dns_records %s - %d %s - api call failed' % (dns_name, e, e))
-    
+        log('/zones/dns_records %s - %d %s - api call failed' % (dns_name, e, e))
+        exit
+
     return dns_records
 
 def GetZoneID(cf):
@@ -76,17 +77,28 @@ def GetZoneID(cf):
 def UpdateRecord(cf, ids, currentIP):
     for dns_record in ids:
             knownIP = dns_record[0]['content']
-            host = dns_record[0]["name"]
-            print currentIP
-            print knownIP
-            print("{0} {1} {2} {3}".format(host, dns_record[0]["id"], dns_record[0]["content"], dns_record[0]["type"]))
+            dns_name = dns_record[0]["name"]
+            dns_record_id = dns_record[0]["id"]
+            ip_address_type = dns_record[0]["type"]
+            zone_id = dns_record[0]["zone_id"]
+            #print currentIP
+            #print knownIP
+            #print("{0} {1} {2} {3}".format(dns_name, dns_record_id, ip_address, ip_address_type))
+
+            #print(dns_record[0])
             if currentIP == knownIP:
-                log("IP, {0}, has not changed for {1}.".format(knownIP, host))
+                log("IP, {0}, has not changed for {1}.".format(knownIP, dns_name))
                 exit
-
-    
-
-
+            else:
+                dns_record[0]['content'] = currentIP.address
+                try:
+                    #dns_record = cf.zones.dns_records.put(zone_id, dns_record_id, data=dns_record[0])
+                    msg = "UPDATED: {0} {1} -> {2}".format(dns_name, knownIP, currentIP)
+                    log(msg)
+                    SendUpdateEmail(msg)
+                except CloudFlare.exceptions.CloudFlareAPIError as e:
+                    log("/zones.dns_records.put {0} - {1} {2} - api call failed".format(dns_name, e, e))
+                    exit                
 
 if __name__ == "__main__":
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -96,11 +108,6 @@ if __name__ == "__main__":
     #print(sys.path.insert(0, os.path.abspath('..')))
     required = GetRequired()
     currentIP = GetCurrentIP()
-    #knownIP = GetLastKnownIP()
-    #if currentIP == knownIP:
-        #log("IP, {0}, has not changed.".format(knownIP))
-        #exit
-    #else:
     #print(required["auth_email"])
     #print(required["auth_key"])
     cf = CloudFlare.CloudFlare(email=required["auth_email"], token=required["auth_key"])
