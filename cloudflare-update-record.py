@@ -98,6 +98,7 @@ def UpdateRecord(cf, ids, currentIP):
                 log("/zones.dns_records.put {0} - {1} {2} - api call failed".format(dns_name, e, e))
                 exit                
 
+#Main
 if __name__ == "__main__":
     dir_path = os.path.dirname(os.path.realpath(__file__))
     logging.basicConfig(filename=os.path.join(dir_path, 'cloudflare.log'),level=logging.DEBUG)
